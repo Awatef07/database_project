@@ -2,15 +2,10 @@ import sqlite3
 from datetime import datetime
 import random
 
-# -----------------------------
-# إنشاء أو فتح قاعدة البيانات
-# -----------------------------
+
 conn = sqlite3.connect("shop.db")
 cur = conn.cursor()
 
-# -----------------------------
-# إنشاء الجداول
-# -----------------------------
 cur.execute("""
 CREATE TABLE IF NOT EXISTS Products (
     product_id INTEGER PRIMARY KEY,
@@ -43,11 +38,10 @@ CREATE TABLE IF NOT EXISTS Orders (
 
 conn.commit()
 
-# -----------------------------
-# إدخال بيانات تجريبية
-# -----------------------------
-# بيانات منتجات
-products = [
+
+
+# ---
+ products = [
     ("T-Shirt", "Clothing", 25.5),
     ("Jeans", "Clothing", 50.0),
     ("Sneakers", "Footwear", 80.0),
@@ -57,8 +51,7 @@ products = [
 
 cur.executemany("INSERT INTO Products (name, category, price) VALUES (?, ?, ?)", products)
 
-# بيانات عملاء
-customers = [
+ customers = [
     ("Awatif", "awatif@example.com", "0501234567"),
     ("Ali", "ali@example.com", "0507654321"),
     ("Sara", "sara@example.com", "0509876543"),
@@ -80,10 +73,8 @@ for _ in range(15):
 
 conn.commit()
 
-# -----------------------------
-# استعلامات تحليلية
-# -----------------------------
-# 1. كل الطلبات مع أسماء العملاء والمنتجات
+
+# استعلامات 
 print("=== All Orders ===")
 cur.execute("""
 SELECT o.order_id, c.name AS customer, p.name AS product, o.quantity, o.order_date
@@ -94,7 +85,6 @@ JOIN Products p ON o.product_id = p.product_id
 for row in cur.fetchall():
     print(row)
 
-# 2. إجمالي الكمية المباعة لكل منتج
 print("\n=== Total Quantity Sold per Product ===")
 cur.execute("""
 SELECT p.name, SUM(o.quantity) AS total_sold
@@ -106,7 +96,6 @@ ORDER BY total_sold DESC
 for row in cur.fetchall():
     print(row)
 
-# 3. إجمالي الإنفاق لكل عميل
 print("\n=== Total Spending per Customer ===")
 cur.execute("""
 SELECT c.name, SUM(o.quantity * p.price) AS total_spent
